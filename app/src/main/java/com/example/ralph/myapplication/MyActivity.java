@@ -4,12 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 
 public class MyActivity extends Activity {
@@ -72,6 +78,10 @@ public class MyActivity extends Activity {
         EditText editText = (EditText) findViewById(R.id.edit_message);
         editText.setText("name: " + name + ", height: " + height + ", weight: " + weight);
 
+        saveFile();
+        File f = getTempFile(this, "/aaa/bbb/ralph_temp.txt");
+
+        editText.setText(editText.getText() + "::" + f.getAbsolutePath());
     }
 
     /** Called when the user clicks the Send button */
@@ -82,5 +92,52 @@ public class MyActivity extends Activity {
         intent.putExtra(EXTRA_MESSAGE, message);
 
         startActivity(intent);
+    }
+
+    private void saveFile() {
+        String filename = "ralph001.txt";
+        File file = new File(getFilesDir(), filename);
+
+        String s = "Hello World";
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(s.getBytes());
+            outputStream.close();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private File getTempFile(Context context, String url) {
+        File file = null;
+
+        try {
+            String fileName = Uri.parse(url).getLastPathSegment();
+            file = File.createTempFile(fileName, null, context.getCacheDir());
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        return file;
+    }
+
+    private boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if(Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if(Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            return true;
+        }
+        return false;
     }
 }
