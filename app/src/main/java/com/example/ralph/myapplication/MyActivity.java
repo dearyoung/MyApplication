@@ -1,7 +1,9 @@
 package com.example.ralph.myapplication;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,10 +53,25 @@ public class MyActivity extends Activity {
     }
 
     private void openSearch() {
+        SharedPreferences sharedRef = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        EditText editText = (EditText) findViewById(R.id.edit_message);
 
+        SharedPreferences.Editor editor = sharedRef.edit();
+        editor.putInt("height", 175);
+        editor.putInt("weight", 65);
+        editor.putString("name", "Ralph");
+        editor.commit();
     }
 
     private void openSettings() {
+        SharedPreferences sharedRef = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        int height = sharedRef.getInt("height", 0);
+        int weight = sharedRef.getInt("weight", 0);
+        String name = sharedRef.getString("name", "noname");
+
+        EditText editText = (EditText) findViewById(R.id.edit_message);
+        editText.setText("name: " + name + ", height: " + height + ", weight: " + weight);
+
     }
 
     /** Called when the user clicks the Send button */

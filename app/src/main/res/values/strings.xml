@@ -9,5 +9,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_display_message">My Message</string>
     <string name="hello_world">Hello world!</string>
+    <string name="preference_file_key">preference_file_key</string>
+
 
 </resources>
